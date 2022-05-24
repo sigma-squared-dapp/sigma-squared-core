@@ -1,0 +1,5 @@
+node_modules/
+.gitattributes
+build/
+flatten/
+.secret
