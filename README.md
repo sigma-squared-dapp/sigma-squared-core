@@ -12,7 +12,7 @@ This repository contains all the core Smart Contract code that is deployed on th
 
 The Truffle framework is used for testing and deployment.  To get started install Truffle and setup dependencies for the project.
 
-``$npm install truffle``
+``$npm -g install truffle``
 
 ``$npm install``
 
@@ -22,7 +22,7 @@ See the [Truffle documentation](https://trufflesuite.com/docs/truffle/) for more
 
 For testing it is recommended to use a local Ganache blockchain.
 
-``$npm install -g ganache``
+``$npm -g install ganache``
 
 ``$ganache``
 

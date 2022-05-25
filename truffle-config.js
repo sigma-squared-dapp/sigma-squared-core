@@ -16,11 +16,13 @@ module.exports = {
      network_id: "*"
    },
    polygon_mumbai: {
-    provider: () => new HDWalletProvider(mnemonic, `https://polygon-mumbai.g.alchemy.com/v2/n56fHIjLa8Pofpf3-FoiDZatKEm0DxJV`),
+    provider: () => new HDWalletProvider(mnemonic, `https://matic-mumbai.chainstacklabs.com`),
     network_id: 80001,
     confirmations: 2,
     timeoutBlocks: 200,
-    skipDryRun: false
+    skipDryRun: false,
+    networkCheckTimeout: 1000000,
+    timeoutBlocks: 200,
   },
   },
   //

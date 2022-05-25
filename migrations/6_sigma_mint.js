@@ -17,6 +17,6 @@ module.exports = async function(deployer, network, accounts) {
 
         await sigma.mint(SigmaSquaredTimelockController.address, web3.utils.toWei('500000', 'ether'));
 
-        await sigma.mint(accounts[1], web3.utils.toWei('1000000', 'ether'));
+        await sigma.mint(accounts[0], web3.utils.toWei('1000000', 'ether'));
     }
 }
