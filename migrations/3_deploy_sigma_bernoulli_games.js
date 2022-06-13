@@ -12,6 +12,13 @@ const externalContractInfo = {
     vrfKeyHash: '0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4',
     vrfFeeLink: web3.utils.toWei('0.0001', 'ether'),
     usdcToken: '0xe11A86849d99F524cAC3E7A0Ec1241828e332C62',
+  },
+  polygon: {
+    vrfCoordinator: '0x3d2341ADb2D31f1c5530cDC622016af293177AE0',
+    linkToken: '0xb0897686c545045aFc77CF20eC7A532E3120E0F1',
+    vrfKeyHash: '0xf86195cf7690c55907b2b611ebb7343a6f649bff128701cc542f0569e2c549da',
+    vrfFeeLink: web3.utils.toWei('0.0001', 'ether'),
+    usdcToken: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   }
 }
 
@@ -21,7 +28,7 @@ module.exports = async function(deployer, network) {
     await deployer.deploy(TestRandomnessProvider);
     await deployer.deploy(BernoulliGameNative, TestRandomnessProvider.address);
     await deployer.deploy(BernoulliGameSigmaSquared, TestRandomnessProvider.address, SigmaSquared.address);
-  } else if (network == 'polygon_mumbai') {
+  } else if (network === 'polygon_mumbai' || network === 'polygon') {
     await deployer.deploy(ChainlinkRandomnessProvider,
                           externalContractInfo.polygon_mumbai.vrfCoordinator,
                           externalContractInfo.polygon_mumbai.linkToken,

@@ -86,6 +86,8 @@ contract('Bernoulli Game Basic', (accounts) => {
     await testSingleBet(game, randProvider, accounts[0], web3.utils.toWei('2', 'ether'), 2 * mantissaMultiplier);
     await testSingleBet(game, randProvider, accounts[0], web3.utils.toWei('1', 'ether'), 3 * mantissaMultiplier);
     await testSingleBet(game, randProvider, accounts[0], web3.utils.toWei('2', 'ether'), 7 * mantissaMultiplier);
+    const totalVolume = await game.getTotalVolume();
+    expect(web3.utils.toBN(web3.utils.toWei('10', 'ether')).eq(totalVolume)).to.be.true;
     
     // Check total contract profit.
     var totalContractProfit = web3.utils.toBN(await game.getTotalContractProfit());

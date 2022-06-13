@@ -16,5 +16,17 @@ module.exports = async function(deployer, network, accounts) {
         await timelock.grantRole(await timelock.EXECUTOR_ROLE(), ZERO_ADDRESS);
         // Ensure only the timelock itself is the admin.
         await timelock.revokeRole(await timelock.TIMELOCK_ADMIN_ROLE(), accounts[0]);
+    } else if (network === 'polygon') {
+        await deployer.deploy(SigmaSquaredTimelockController, 0, [], []);
+        // Voting time should be approximate 1 week.
+        await deployer.deploy(SigmaSquaredGovernor, SigmaSquared.address, SigmaSquaredTimelockController.address, 302400);
+        const timelock = await SigmaSquaredTimelockController.deployed();
+        const gov = await SigmaSquaredGovernor.deployed();
+        // Add the governor as the sole proposer.
+        await timelock.grantRole(await timelock.PROPOSER_ROLE(), gov.address);
+        // Allow anyone to execute queued transactions.
+        await timelock.grantRole(await timelock.EXECUTOR_ROLE(), ZERO_ADDRESS);
+        // Ensure only the timelock itself is the admin.
+        await timelock.revokeRole(await timelock.TIMELOCK_ADMIN_ROLE(), accounts[0]);
     }
 };

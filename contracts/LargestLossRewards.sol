@@ -197,9 +197,9 @@ contract LargestLossRewards is SigmaGameRewards, Ownable {
     }
 
     /**
-     * @return roundStartBlock The block that the current round started on, or the last round ended on.
+     * @return roundStart The block that the current round started on, or the last round ended on.
      */
-    function getRoundStartingBlock() public view returns(uint256) {
+    function getCurrentRoundStart() public view returns(uint256) {
         return roundBlock[currentRound - 1];
     }
 

@@ -39,8 +39,11 @@ abstract contract LotteryBase is RandomnessConsumer, GameBase {
         address winner;
     }
 
+    // The total sum of all bets placed.
+    uint256 private totalVolume = 0;
+
     // The minimum round length in blocks.
-    uint256 private roundMinLength;
+    uint256 private minBlocksPerRound;
 
     // The house edge percentage for each bet.  This must be between 0 and 1 (1e8) inclusive.
     uint256 private houseEdgeMantissa = 0;  // 8 decimal places
@@ -56,16 +59,16 @@ abstract contract LotteryBase is RandomnessConsumer, GameBase {
 
     /**
      * @param randomnessProviderIn The randomness provider that is allowed to supply this contract with random ints.
-     * @param roundLengthIn The minimum length, in blocks, a round can be.
+     * @param minBlocksPerRoundIn The minimum length, in blocks, a round can be.
      */
-    constructor(RandomnessProvider randomnessProviderIn, uint256 roundLengthIn) GameBase(randomnessProviderIn) {
-        roundMinLength = roundLengthIn;
+    constructor(RandomnessProvider randomnessProviderIn, uint256 minBlocksPerRoundIn) GameBase(randomnessProviderIn) {
+        minBlocksPerRound = minBlocksPerRoundIn;
 
         // Initialize first round.
         rounds.push();
         Round storage firstRound = rounds[0];
         firstRound.startingBlock = block.number;
-        firstRound.endingBlock = block.number + roundLengthIn;
+        firstRound.endingBlock = block.number + minBlocksPerRoundIn;
     }
 
     /**
@@ -99,6 +102,7 @@ abstract contract LotteryBase is RandomnessConsumer, GameBase {
             currentRound.totalPool += depositAmount;
             emit Deposit(msg.sender, rounds.length - 1, depositAmount, depositAmount);
         }
+        totalVolume += amount;
     }
 
     /**
@@ -170,15 +174,15 @@ abstract contract LotteryBase is RandomnessConsumer, GameBase {
         Round storage newRound = rounds[rounds.length - 1];
         require(!newRound.settled);
         newRound.startingBlock = block.number;
-        newRound.endingBlock = block.number + roundMinLength;
+        newRound.endingBlock = block.number + minBlocksPerRound;
     }
 
     /**
      * Set the minimum length a lottery round can be.
-     * @param roundLengthBlocks The minimum duration in blocks.
+     * @param minBlocksPerRoundIn The minimum duration in blocks.
      */
-    function setRoundMinLength(uint256 roundLengthBlocks) external onlyOwner {
-        roundMinLength = roundLengthBlocks;
+    function setMinBlocksPerRound(uint256 minBlocksPerRoundIn) external onlyOwner {
+        minBlocksPerRound = minBlocksPerRoundIn;
     }
 
     /**
@@ -199,10 +203,17 @@ abstract contract LotteryBase is RandomnessConsumer, GameBase {
     }
 
     /**
-     * @return roundMinLength The min length a lottery round can be, in blocks.
+     * @return totalVolume The total sum of all bets placed.
      */
-    function getRoundMinLength() public view returns(uint256) {
-        return roundMinLength;
+    function getTotalVolume() public view returns(uint256) {
+        return totalVolume;
+    }
+
+    /**
+     * @return minBlocksPerRound The min length a lottery round can be, in blocks.
+     */
+    function getMinBlocksPerRound() public view returns(uint256) {
+        return minBlocksPerRound;
     }
 
     /**

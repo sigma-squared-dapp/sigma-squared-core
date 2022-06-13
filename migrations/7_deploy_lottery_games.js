@@ -26,5 +26,16 @@ module.exports = async function(deployer, network) {
     await rand.addAllowedUser(LotteryNative.address);
     await rand.addAllowedUser(LotterySigmaSquared.address);
     await rand.addAllowedUser(LotteryUSDC.address);
+  } else if (network === 'polygon') {
+    // A lottery round should be ~1 week (302400 blocks).
+    await deployer.deploy(LotteryNative, ChainlinkRandomnessProvider.address, 302400);
+    await deployer.deploy(LotterySigmaSquared, ChainlinkRandomnessProvider.address, SigmaSquared.address, 302400);
+    await deployer.deploy(LotteryUSDC, ChainlinkRandomnessProvider.address, externalContractInfo.polygon_mumbai.usdcToken, 302400);
+
+    // Add the Lottery Games as allowed randomness provider users, so they can request randomness.
+    const rand = await ChainlinkRandomnessProvider.deployed();
+    await rand.addAllowedUser(LotteryNative.address);
+    await rand.addAllowedUser(LotterySigmaSquared.address);
+    await rand.addAllowedUser(LotteryUSDC.address);
   }
 };

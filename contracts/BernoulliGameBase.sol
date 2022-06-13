@@ -45,6 +45,9 @@ abstract contract BernoulliGameBase is RandomnessConsumer, GameBase {
     // Maps request IDs (from randomness provider) to bet indices.
     mapping(bytes32 => uint256) private requestIdMap;
 
+    // The total sum of all bets placed.
+    uint256 private totalVolume = 0;
+
     uint256 private numActiveBets = 0;
 
     // The expected house edge percentage for each bet.  This must be between 0 and 1 (1e8), inclusive.
@@ -92,6 +95,7 @@ abstract contract BernoulliGameBase is RandomnessConsumer, GameBase {
         placedBets.push(Bet(msg.sender, amount, multiplier, block.number, false, false));
         emit BetAccepted(msg.sender, amount, multiplier, requestId);
 
+        totalVolume += amount;
         ++numActiveBets;
 
         return requestId;
@@ -101,6 +105,7 @@ abstract contract BernoulliGameBase is RandomnessConsumer, GameBase {
     /**
      * Receive generated randomness from the designated randomness provider.  Extreme care needs to be taken to ensure
      * the randomness provider is trusted/secure and is truly random.  This is controlled by the contract owner.
+     * The corresponding bet is settled using the provided randomness.
      * @param randomInt The provided random uint256.
      */
     function receiveRandomInt(bytes32 requestId, uint256 randomInt) external onlyRandomnessProvider {
@@ -189,6 +194,13 @@ abstract contract BernoulliGameBase is RandomnessConsumer, GameBase {
      */
     function withdraw(uint256 amount) external onlyOwner {
         _doTransfer(owner(), amount);
+    }
+
+    /**
+     * @return totalVolume The total sum of all bets placed.
+     */
+    function getTotalVolume() public view returns(uint256) {
+        return totalVolume;
     }
 
     /**

@@ -84,7 +84,7 @@ contract('Sigma Squared Rewards', (accounts) => {
     expect(web3.utils.toBN(web3.utils.toWei('0', 'ether')).eq(await sigmaRewards.getBettorsCurrentLargestLoss(accounts[4]))).to.be.true;
 
     // Get original block number
-    var startBlock = await sigmaRewards.getRoundStartingBlock();
+    var startBlock = await sigmaRewards.getCurrentRoundStart();
 
     // Ensure each account doesn't have any rewards initially.
     assert.equal(await sigmaRewards.calculateCurrentRewards(accounts[0]), 0);
@@ -94,7 +94,7 @@ contract('Sigma Squared Rewards', (accounts) => {
     assert.equal(await sigmaRewards.calculateCurrentRewards(accounts[4]), 0);
     // Trigger round.
     await sigmaRewards.triggerRound();
-    var endBlock = await sigmaRewards.getRoundStartingBlock();
+    var endBlock = await sigmaRewards.getCurrentRoundStart();
     // Ensure each account has the expected rewards available.
     var expectedAmount = web3.utils.toBN(endBlock - startBlock).mul(web3.utils.toBN(web3.utils.toWei('10', 'ether')));
     var account0Rewards = await sigmaRewards.calculateCurrentRewards(accounts[0]);
@@ -150,8 +150,7 @@ contract('Sigma Squared Rewards', (accounts) => {
     expect(web3.utils.toBN(web3.utils.toWei('2', 'ether')).eq(await sigmaRewards.getBettorsCurrentLargestLoss(accounts[3]))).to.be.true;
     expect(web3.utils.toBN(web3.utils.toWei('4', 'ether')).eq(await sigmaRewards.getBettorsCurrentLargestLoss(accounts[4]))).to.be.true;
 
-    var startBlock = await sigmaRewards.getRoundStartingBlock();
-    const originalStartBlock = startBlock;
+    var startBlock = await sigmaRewards.getCurrentRoundStart();
 
     // Ensure each account doesn't have any rewards initially, other than those from previous rounds.
     expect(web3.utils.toBN(0).eq(await sigmaRewards.calculateCurrentRewards(accounts[0]))).to.be.true;
@@ -161,7 +160,7 @@ contract('Sigma Squared Rewards', (accounts) => {
     expect(web3.utils.toBN(0).eq(await sigmaRewards.calculateCurrentRewards(accounts[4]))).to.be.true;
     // Trigger round.
     await sigmaRewards.triggerRound();
-    var endBlock = await sigmaRewards.getRoundStartingBlock();
+    var endBlock = await sigmaRewards.getCurrentRoundStart();
     
     // Ensure each account has the expected rewards available.
     var expectedAmount = web3.utils.toBN(endBlock - startBlock).mul(web3.utils.toBN(web3.utils.toWei('10', 'ether')));

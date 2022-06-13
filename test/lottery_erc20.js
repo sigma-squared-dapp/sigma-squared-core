@@ -39,7 +39,7 @@ contract('Lottery ERC20', (accounts) => {
 
     var startBlock = await lottery.getCurrentRoundStart();
     var endBlock = await lottery.getCurrentRoundEnd();
-    var roundLength = await lottery.getRoundMinLength();
+    var roundLength = await lottery.getMinBlocksPerRound();
     expect(endBlock.sub(startBlock).eq(roundLength)).to.be.true;
 
     // Have two people enter, first player wins.
@@ -50,6 +50,7 @@ contract('Lottery ERC20', (accounts) => {
     expect((await currentRoundPool()).eq(web3.utils.toBN(2))).to.be.true;
     expect(web3.utils.toBN(1).eq(await lottery.getEntrantsCurrentDeposit(accounts[0]))).to.be.true;
     expect(web3.utils.toBN(1).eq(await lottery.getEntrantsCurrentDeposit(accounts[1]))).to.be.true;
+    expect(web3.utils.toBN(2).eq(await lottery.getTotalVolume())).to.be.true;
 
     var startAccount0Balance = await accountBalance(accounts[0]);
     var requestId = await triggerRoundEnd(accounts[1]);
@@ -72,5 +73,6 @@ contract('Lottery ERC20', (accounts) => {
     expect((await lotteryBalance()).eq(ZERO_BN)).to.be.true;
     expect(endAccount1Balance.sub(startAccount1Balance).eq(web3.utils.toBN(2))).to.be.true;
     expect((await currentRoundPool()).eq(ZERO_BN)).to.be.true;
+    expect(web3.utils.toBN(4).eq(await lottery.getTotalVolume())).to.be.true;
   });
 });
