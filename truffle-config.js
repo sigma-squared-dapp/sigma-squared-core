@@ -1,6 +1,7 @@
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const fs = require('fs');
 const mnemonic = fs.readFileSync(".secret").toString().trim();
+const mnemonicProd = fs.readFileSync(".secret_prod").toString().trim();
 
 module.exports = {
   // Uncommenting the defaults below 
@@ -19,11 +20,23 @@ module.exports = {
     provider: () => new HDWalletProvider(mnemonic, `https://matic-mumbai.chainstacklabs.com`),
     network_id: 80001,
     confirmations: 2,
-    timeoutBlocks: 200,
     skipDryRun: false,
     networkCheckTimeout: 1000000,
     timeoutBlocks: 200,
-  },
+   },
+   polygon: {
+     provider: () => new HDWalletProvider({
+       mnemonic: mnemonicProd,
+       providerOrUrl: 'https://polygon-rpc.com/',
+       chainId: 137
+     }),
+     network_id: 137,
+     gasPrice: 50000000000,
+     confirmation: 2,
+     skipDryRun: false,
+     networkCheckTimeout: 1000000,
+     timeoutBlocks: 200,
+   }
   },
   //
   // Truffle DB is currently disabled by default; to enable it, change enabled:
