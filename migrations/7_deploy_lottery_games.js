@@ -9,6 +9,9 @@ const TestRandomnessProvider = artifacts.require("TestRandomnessProvider");
 const externalContractInfo = {
   polygon_mumbai: {
     usdcToken: '0xe11A86849d99F524cAC3E7A0Ec1241828e332C62',
+  },
+  polygon: {
+    usdcToken: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   }
 }
 
@@ -19,7 +22,7 @@ module.exports = async function(deployer, network) {
   } else if (network == 'polygon_mumbai') {
     await deployer.deploy(LotteryNative, ChainlinkRandomnessProvider.address, 180);
     await deployer.deploy(LotterySigmaSquared, ChainlinkRandomnessProvider.address, SigmaSquared.address, 180);
-    await deployer.deploy(LotteryUSDC, ChainlinkRandomnessProvider.address, externalContractInfo.polygon_mumbai.usdcToken, 180);
+    await deployer.deploy(LotteryUSDC, ChainlinkRandomnessProvider.address, externalContractInfo[network].usdcToken, 180);
 
     // Add the Lottery Games as allowed randomness provider users, so they can request randomness.
     const rand = await ChainlinkRandomnessProvider.deployed();
@@ -30,7 +33,7 @@ module.exports = async function(deployer, network) {
     // A lottery round should be ~1 week (302400 blocks).
     await deployer.deploy(LotteryNative, ChainlinkRandomnessProvider.address, 302400);
     await deployer.deploy(LotterySigmaSquared, ChainlinkRandomnessProvider.address, SigmaSquared.address, 302400);
-    await deployer.deploy(LotteryUSDC, ChainlinkRandomnessProvider.address, externalContractInfo.polygon_mumbai.usdcToken, 302400);
+    await deployer.deploy(LotteryUSDC, ChainlinkRandomnessProvider.address, externalContractInfo[network].usdcToken, 302400);
 
     // Add the Lottery Games as allowed randomness provider users, so they can request randomness.
     const rand = await ChainlinkRandomnessProvider.deployed();

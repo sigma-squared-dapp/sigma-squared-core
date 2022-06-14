@@ -30,13 +30,13 @@ module.exports = async function(deployer, network) {
     await deployer.deploy(BernoulliGameSigmaSquared, TestRandomnessProvider.address, SigmaSquared.address);
   } else if (network === 'polygon_mumbai' || network === 'polygon') {
     await deployer.deploy(ChainlinkRandomnessProvider,
-                          externalContractInfo.polygon_mumbai.vrfCoordinator,
-                          externalContractInfo.polygon_mumbai.linkToken,
-                          externalContractInfo.polygon_mumbai.vrfKeyHash,
-                          externalContractInfo.polygon_mumbai.vrfFeeLink);
+                          externalContractInfo[network].vrfCoordinator,
+                          externalContractInfo[network].linkToken,
+                          externalContractInfo[network].vrfKeyHash,
+                          externalContractInfo[network].vrfFeeLink);
     await deployer.deploy(BernoulliGameNative, ChainlinkRandomnessProvider.address);
     await deployer.deploy(BernoulliGameSigmaSquared, ChainlinkRandomnessProvider.address, SigmaSquared.address);
-    await deployer.deploy(BernoulliGameUSDC, ChainlinkRandomnessProvider.address, externalContractInfo.polygon_mumbai.usdcToken);
+    await deployer.deploy(BernoulliGameUSDC, ChainlinkRandomnessProvider.address, externalContractInfo[network].usdcToken);
 
     // Add the Bernoulli Games as allowed randomness provider users, so they can request randomness.
     const rand = await ChainlinkRandomnessProvider.deployed();
